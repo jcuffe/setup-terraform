@@ -34,6 +34,9 @@ const tc = __webpack_require__(7784);
 const io = __webpack_require__(7436);
 const releases = __webpack_require__(9947);
 
+// Constants
+const CACHE_KEY = 'terraform'
+
 // arch in [arm, x32, x64...] (https://nodejs.org/api/os.html#os_os_arch)
 // return value in [amd64, 386, arm]
 function mapArch (arch) {
@@ -53,7 +56,8 @@ function mapOS (os) {
   return mappings[os] || os;
 }
 
-async function downloadCLI (url) {
+async function downloadCLI (url, version) {
+  // Look for CLI in the cache first
   core.debug(`Downloading Terraform CLI from ${url}`);
   const pathToCLIZip = await tc.downloadTool(url);
 
@@ -65,7 +69,9 @@ async function downloadCLI (url) {
     throw new Error(`Unable to download Terraform from ${url}`);
   }
 
-  return pathToCLI;
+  // Cache for later
+  const cachedPath = await tc.cacheDir(dir, CACHE_KEY, version);
+  return cachedPath;
 }
 
 async function installWrapper (pathToCLI) {
@@ -151,8 +157,11 @@ async function run () {
       throw new Error(`Terraform version ${version} not available for ${platform} and ${arch}`);
     }
 
-    // Download requested version
-    const pathToCLI = await downloadCLI(build.url);
+    // Check cache for requested version, then download if not present
+    let pathToCLI = tc.find(CACHE_KEY, version, arch)
+    if (!pathToCLI) {
+      pathToCLI = await downloadCLI(build.url, version);
+    }
 
     // Install our wrapper
     if (wrapper) {
