@@ -81,20 +81,20 @@ async function installWrapper (pathToCLI) {
   const exeSuffix = os.platform().startsWith('win') ? '.exe' : '';
 
   // Rename terraform(.exe) to terraform-bin(.exe)
-  try {
-    source = [pathToCLI, `terraform${exeSuffix}`].join(path.sep);
-    target = [pathToCLI, `terraform-bin${exeSuffix}`].join(path.sep);
-    core.debug(`Moving ${source} to ${target}.`);
-    await io.mv(source, target);
-  } catch (e) {
-    core.error(`Unable to move ${source} to ${target}.`);
-    throw e;
-  }
+  // try {
+  //   source = [pathToCLI, `terraform${exeSuffix}`].join(path.sep);
+  //   target = [pathToCLI, `terraform-bin${exeSuffix}`].join(path.sep);
+  //   core.debug(`Moving ${source} to ${target}.`);
+  //   await io.mv(source, target);
+  // } catch (e) {
+  //   core.error(`Unable to move ${source} to ${target}.`);
+  //   throw e;
+  // }
 
   // Install our wrapper as terraform
   try {
     source = __webpack_require__.ab + "index1.js";
-    target = [pathToCLI, 'terraform'].join(path.sep);
+    target = [pathToCLI, 'terraform-wrapper'].join(path.sep);
     core.debug(`Copying ${source} to ${target}.`);
     await io.cp(__webpack_require__.ab + "index1.js", target);
   } catch (e) {
