@@ -158,9 +158,10 @@ async function run () {
     }
 
     // Check cache for requested version, then download if not present
-    let pathToCLI = tc.find(CACHE_KEY, version, arch)
+    let pathToCLI = tc.find(CACHE_KEY, release.version, arch)
+    core.debug(`Cached path: ${pathToCLI}`)
     if (!pathToCLI) {
-      pathToCLI = await downloadCLI(build.url, version);
+      pathToCLI = await downloadCLI(build.url, release.version);
     }
 
     // Install our wrapper
