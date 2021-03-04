@@ -70,7 +70,7 @@ async function downloadCLI (url, version) {
   }
 
   // Cache for later
-  const cachedPath = await tc.cacheDir(dir, CACHE_KEY, version);
+  const cachedPath = await tc.cacheDir(pathToCLI, CACHE_KEY, version);
   return cachedPath;
 }
 
